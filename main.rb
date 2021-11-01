@@ -57,36 +57,29 @@ def one_site_page_parsing(filename, link_to_some_category)
   }
 end
 
+def one_product_page_parsing(filename, page_url)
+  parsed_page = parsing_func(page_url + ".html")
+  finded_name = parsed_page.xpath("//h1[@class = 'product_main_name']/text()")
+  finded_picture = parsed_page.xpath("//*[@id = 'bigpic']/@src")
+  find = parsed_page.xpath("//li[contains(@class,'quantityDiscount')]")
+  @prices = find.xpath("//span[@class = 'variation-price']/text()")
+  @weigths = find.xpath("//span[@class = 'variation-name']/text()")
+  @pandv = @prices.zip(@weigths).map do |finded_price,finded_weigth|
+    add_to_file(filename, "#{finded_name}  X#{finded_weigth} ", finded_price, finded_picture)
+  end
+end
+
 def main
   puts "Enter file name(format -- name_of_file.csv):"
   filename = gets.chomp
   link_to_some_category = enter
   puts "Program starts it's work!"
-
   create_file(filename)
-
   one_site_page_parsing(filename, link_to_some_category)
   (2..4).each { |page_num|
     result_link_to_category = link_to_some_category + "?p=#{page_num}"
-    one_site_page_parsing(filename, result_link_to_category)
-  }
+    one_site_page_parsing(filename, result_link_to_category) }
   puts "Program finished it's work!"
-end
-
-def one_product_page_parsing(filename, page_url)
-  parsed_page = parsing_func(page_url + ".html")
-  finded_name = parsed_page.xpath("//h1[@class = 'product_main_name']/text()")
-  finded_picture = parsed_page.xpath("//*[@id = 'bigpic']/@src")
-
-  find = parsed_page.xpath("//li[contains(@class,'quantityDiscount')]")
-  @prices = find.xpath("//span[@class = 'variation-price']/text()")
-  @weigths = find.xpath("//span[@class = 'variation-name']/text()")
-  @pandv = @prices.zip(@weigths).map do |a,b|
-   finded_price = a
-   finded_weigth = b
-   add_to_file(filename, "#{finded_name}  X#{finded_weigth} ", finded_price, finded_picture)
-  end
-
 end
 
 main
