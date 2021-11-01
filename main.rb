@@ -69,16 +69,36 @@ def one_product_page_parsing(filename, page_url)
   end
 end
 
+def show_title(page_url)
+  page = parsing_func(page_url)
+  title = page.xpath("//title/text()")
+  return title
+end
+
+def main_parse(filename, link_to_category)
+  while_cond = true
+  page_num = 2
+  one_site_page_parsing(filename, link_to_category)
+  check = link_to_category
+  while while_cond
+    result_link_to_category = link_to_category + "?p=#{page_num}"
+    page_num += 1
+    if (show_title(result_link_to_category).to_s != show_title(check).to_s)
+      one_site_page_parsing(filename, result_link_to_category)
+      check = result_link_to_category
+    else
+      while_cond = false
+    end
+  end
+end
+
 def main
   puts "Enter file name(format -- name_of_file.csv):"
   filename = gets.chomp
   link_to_some_category = enter
   puts "Program starts it's work!"
   create_file(filename)
-  one_site_page_parsing(filename, link_to_some_category)
-  (2..4).each { |page_num|
-    result_link_to_category = link_to_some_category + "?p=#{page_num}"
-    one_site_page_parsing(filename, result_link_to_category) }
+  main_parse(filename, link_to_some_category)
   puts "Program finished it's work!"
 end
 
