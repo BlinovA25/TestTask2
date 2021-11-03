@@ -76,19 +76,12 @@ def show_title(page_url)
 end
 
 def main_parse(filename, link_to_category)
-  while_cond = true
-  page_num = 2
+  num_of_produts = parsing_func(link_to_category).xpath('//input[@id = "nb_item_bottom"]/@value').text.to_i
+  num_of_pages = (num_of_produts/25.0).ceil
   one_site_page_parsing(filename, link_to_category)
-  check = link_to_category
-  while while_cond
+  (2..num_of_pages).each do |page_num|
     result_link_to_category = link_to_category + "?p=#{page_num}"
-    page_num += 1
-    if (show_title(result_link_to_category).to_s != show_title(check).to_s)
-      one_site_page_parsing(filename, result_link_to_category)
-      check = result_link_to_category
-    else
-      while_cond = false
-    end
+    one_site_page_parsing(filename, result_link_to_category)
   end
 end
 
