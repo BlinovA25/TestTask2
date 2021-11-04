@@ -1,5 +1,5 @@
-
-class WorkWithFile
+# модуль для работы с .csv файлом
+module WorkWithFile
   def self.add_to_file (filename,name,price,picture)
     products = []
     products.push name: name, price: price, picture: picture
