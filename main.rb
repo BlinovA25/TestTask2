@@ -7,20 +7,6 @@ require_relative 'product'
 require_relative 'parsing'
 require_relative 'work_with_file'
 
-def enter
-  status = true
-  while(status) do
-    puts "Enter the link of webpage:"
-    url = gets.chomp
-    puts "Your link -- url\nEnter Y to continue/N to rewrite"
-    agree = gets.chomp
-    if agree == 'Y'
-      status = false
-      return url
-    end
-  end
-end
-
 def main
   params = YAML.load_file('params.yml')
   start = Time.now.to_i
@@ -31,8 +17,3 @@ def main
 end
 
 main
-
-#pr = Product.new("Food","10$","picture.pic")
-#pr.show
-
-

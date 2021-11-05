@@ -1,9 +1,7 @@
-
-# Добавление сущности класса -- строка 47
+# Добавление сущности класса -- строка 40
 #
-# Реализация многопоточности -- строки 30-36
+# Реализация многопоточности -- строки 26-31
 #
-
 require 'thread'
 
 require_relative 'product'
@@ -23,23 +21,18 @@ module Parsing
 
   def self.one_site_page_parsing(filename, link_to_some_category)
     parsed_page = parsing_func(link_to_some_category)
-    find_link_by_class = parsed_page.xpath("//*[@class = 'product_img_link pro_img_hover_scale product-list-category-img']/@href")
-    link_list = find_link_by_class.to_s.split(/.html/)
+    link_list = parsed_page.xpath("//*[@class = 'product_img_link pro_img_hover_scale product-list-category-img']/@href").to_s.split(/.html/)
     puts "Start parsing products page:"
-    #Вызов функции парсинга одной страницы продукта теперь обёрнут в потоки
     threads = []
     link_list.each { |url_in_link_list|
       threads << Thread.new do
         one_product_page_parsing(filename, url_in_link_list)
-      end
-    }
+      end }
     threads.map(&:join)
   end
 
   def self.one_product_page_parsing(filename, page_url)
     parsed_page = parsing_func(page_url + ".html")
-    #finded_name = parsed_page.xpath("//h1[@class = 'product_main_name']/text()")
-    #finded_picture = parsed_page.xpath("//*[@id = 'bigpic']/@src")
     find = parsed_page.xpath("//li[contains(@class,'quantityDiscount')]")
     @prices = find.xpath("//span[@class = 'variation-price']/text()")
     @weigths = find.xpath("//span[@class = 'variation-name']/text()")
